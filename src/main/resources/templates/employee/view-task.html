@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Task Detail</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container stack" data-reveal>
+    <a th:href="@{/employee/dashboard}">Back to Dashboard</a>
+    <h1 th:text="'Task #' + ${task.id}"></h1>
+
+    <div class="card">
+        <p><strong>Title:</strong> <span th:text="${task.title}"></span></p>
+        <p><strong>Description:</strong> <span th:text="${task.description}"></span></p>
+        <p><strong>Status:</strong> <span class="status" th:text="${task.status}"></span></p>
+    </div>
+
+    <div class="card" th:if="${task.status.name() == 'ASSIGNED' or task.status.name() == 'IN_PROGRESS'}">
+        <h3>Update Status</h3>
+        <form th:action="@{/employee/task/{id}/update-status(id=${task.id})}" method="post">
+            <label for="newStatus">Move task to</label>
+            <select id="newStatus" name="newStatus">
+                <option value="IN_PROGRESS">IN_PROGRESS</option>
+                <option value="RESOLVED">RESOLVED</option>
+            </select>
+            <button type="submit">Update</button>
+        </form>
+    </div>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

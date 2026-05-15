@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Task</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container" data-reveal>
+    <h1>Create Task</h1>
+    <div th:if="${message}" class="message" th:text="${message}"></div>
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+
+    <form th:action="@{/supervisor/create-task}" method="post" enctype="multipart/form-data">
+        <label for="title">Title</label>
+        <input id="title" name="title" type="text" required>
+
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="5" required></textarea>
+
+        <label for="employeeId">Assign Employee (optional)</label>
+        <select id="employeeId" name="employeeId">
+            <option value="">Unassigned</option>
+            <option th:each="employee : ${employees}"
+                    th:value="${employee.id}"
+                    th:text="${employee.fullName} + ' (' + ${employee.username} + ')'">
+            </option>
+        </select>
+
+        <label for="file">Attachment (optional)</label>
+        <input id="file" name="file" type="file">
+
+        <div class="toolbar">
+            <button class="button" type="submit">Create Task</button>
+            <a class="button secondary" th:href="@{/supervisor/dashboard}">Back</a>
+        </div>
+    </form>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

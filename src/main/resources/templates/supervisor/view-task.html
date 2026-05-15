@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Task Detail</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container stack" data-reveal>
+    <a th:href="@{/supervisor/dashboard}">Back to Dashboard</a>
+    <h1 th:text="'Task #' + ${task.id}"></h1>
+
+    <div class="card">
+        <p><strong>Title:</strong> <span th:text="${task.title}"></span></p>
+        <p><strong>Description:</strong> <span th:text="${task.description}"></span></p>
+        <p><strong>Status:</strong> <span class="status" th:text="${task.status}"></span></p>
+        <p><strong>Assigned to:</strong> <span th:text="${task.assignedEmployee?.username}"></span></p>
+    </div>
+
+    <div class="card" th:if="${task.status.name() == 'CREATED' or task.status.name() == 'ASSIGNED'}">
+        <h3>Assign / Reassign</h3>
+        <form th:action="@{/supervisor/task/{id}/assign(id=${task.id})}" method="post">
+            <select name="employeeId">
+                <option th:each="emp : ${employees}" th:value="${emp.id}" th:text="${emp.username}"></option>
+            </select>
+            <button type="submit">Assign</button>
+        </form>
+    </div>
+
+    <div class="card" th:if="${task.status.name() == 'RESOLVED'}">
+        <form th:action="@{/supervisor/task/{id}/complete(id=${task.id})}" method="post">
+            <button type="submit">Confirm Completion (Mark as DONE)</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>Files</h3>
+        <ul class="list">
+            <li th:each="file : ${files}">
+                <a th:href="@{/files/{id}(id=${file.id})}" th:text="${file.originalFilename}"></a>
+            </li>
+        </ul>
+        <form th:action="@{/supervisor/task/{id}/upload(id=${task.id})}" method="post" enctype="multipart/form-data">
+            <label>Upload new file: <input type="file" name="file"/></label>
+            <button type="submit">Upload</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>History</h3>
+        <ul class="list">
+            <li th:each="ev : ${events}" th:text="${ev.timestamp} + ' - ' + ${ev.performedBy} + ': ' + ${ev.description}"></li>
+        </ul>
+    </div>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>
